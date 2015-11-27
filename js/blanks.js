@@ -485,7 +485,15 @@ H5P.Blanks = (function ($, Question) {
     var maxScore = this.getMaxScore();
     var score = this.getScore();
     var scoreText = this.params.score.replace('@score', score).replace('@total', maxScore);
-    this.setFeedback(scoreText, score, maxScore);
+
+    console.log("showing feedback here: ", scoreText, score, maxScore);
+    // console.log("the content id is: ", this.contentId);
+    console.log(this.params);
+    var modalData = this.params.feedbackModal;
+    modalData.contentId = this.contentId;
+    this.setFeedback(scoreText, score, maxScore, modalData);
+    
+    // this.setFeedback(feedback, score, max, modalData); 
 
     if (score === maxScore) {
       this.toggleButtonVisibility(STATE_FINISHED);
