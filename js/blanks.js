@@ -146,20 +146,35 @@ H5P.Blanks = (function ($, Question) {
    *   The question with blanks replaced by the given handler.
    */
   Blanks.prototype.handleBlanks = function (question, handler) {
+
     // Go through the text and run handler on all asterix
     var clozeEnd, clozeStart = question.indexOf('*');
     while (clozeStart !== -1 && clozeEnd !== -1) {
       clozeStart++;
       clozeEnd = question.indexOf('*', clozeStart);
+
+      var positionStart = question.indexOf('{');
+      var positionEnd = question.indexOf('}', positionStart);
+      var positionString = question.substring((positionStart + 1), positionEnd);
+      var positionStringSplit = positionString.indexOf(',');
+      var positionX = positionString.substring(0, positionStringSplit);
+      var positionY = positionString.substring(positionStringSplit + 1);
+
       if (clozeEnd === -1) {
         continue; // No end
       }
 
-      var replacer = handler(question.substring(clozeStart, clozeEnd));
-      clozeEnd++;
-      question = question.slice(0, clozeStart - 1) + replacer + question.slice(clozeEnd);
+      if( positionStart > 0 ) { // positioned version
+        var replacer = handler(question.substring(clozeStart, positionStart));
+        clozeEnd++;
+        question = question.slice(0, clozeStart - 1) + "<div style='position: fixed; left:" +  positionX + "; top:" + positionY + ";'>" + replacer + "</div>" + question.slice(clozeEnd);
+      } else { // standard carsion
+        var replacer = handler(question.substring(clozeStart, clozeEnd));
+        clozeEnd++;
+        question = question.slice(0, clozeStart - 1) + replacer + question.slice(clozeEnd);
+      }
 
-      // Find the next cloze
+      // Find the next cloze (Start)
       clozeStart = question.indexOf('*', clozeEnd);
     }
     return question;
@@ -184,7 +199,6 @@ H5P.Blanks = (function ($, Question) {
         self.clozes.push(cloze);
         return cloze;
       });
-
       html += '<div>' + question + '</div>';
     }
 
@@ -488,7 +502,7 @@ H5P.Blanks = (function ($, Question) {
 
     var modalData = this.params.feedbackModal;
     modalData.contentId = this.contentId;
-    
+
     this.setFeedback(scoreText, score, maxScore, modalData);
     
     if (score === maxScore) {
