@@ -503,6 +503,13 @@ H5P.Blanks = (function ($, Question) {
     var modalData = this.params.feedbackModal;
     modalData.contentId = this.contentId;
 
+    // force success feedback
+    if (this.params.ambiguousAnswers.ambiguousEnabled) {
+      score = 1;
+      maxScore = 1;
+      modalData.modalEnabled = true;
+      modalData.feedbackModalRight = this.params.ambiguousAnswers.feedbackModal;
+    }
     this.setFeedback(scoreText, score, maxScore, modalData);
     
     if (score === maxScore) {
