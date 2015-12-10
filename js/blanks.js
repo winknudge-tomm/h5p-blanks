@@ -114,7 +114,7 @@ H5P.Blanks = (function ($, Question) {
         self.markResults();
         self.showEvaluation();
         self.triggerXAPIScored(self.getScore(), self.getMaxScore(), 'answered');
-      });
+      }, true, self.params.buttonPosition);
     }
 
     // Check answer button
@@ -123,14 +123,14 @@ H5P.Blanks = (function ($, Question) {
         self.toggleButtonVisibility(STATE_SHOWING_SOLUTION);
         self.showCorrectAnswers();
       }
-    }, self.params.behaviour.enableSolutionsButton);
+    }, self.params.behaviour.enableSolutionsButton, self.params.buttonPosition);
 
     // Try again button
     if (self.params.behaviour.enableRetry === true) {
       self.addButton('try-again', self.params.tryAgain, function () {
         self.resetTask();
         self.$questions.filter(':first').find('input:first').focus();
-      });
+      }, true, self.params.buttonPosition);
     }
     self.toggleButtonVisibility(STATE_ONGOING);
   };
